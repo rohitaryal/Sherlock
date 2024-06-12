@@ -28,7 +28,7 @@ detective=Sherlock()
 print(detective.find("ROLL_NUMBER"))
 ```
 🙀 **Outputs:**
-```JSON
+```python
 {
     'status': 'success',
     'student_id': '1234567890', 
