@@ -5,6 +5,7 @@ Details include
 - E-Mail
 - Phone Number
 - Branch/Program
+- Student ID
 
 ## Requirements
 - Python3.x
