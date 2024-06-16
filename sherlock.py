@@ -12,7 +12,11 @@ text = {
 
 class Sherlock:
     def __init__(self):
+        # Main page we deal with to send request
         self.payment_post_url = "https://form.kiit.ac.in/payment/";
+
+        # Headers originally copied from curl-impersonate since 
+        # real ones weren't wroking
         self.headers = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -28,14 +32,18 @@ class Sherlock:
         first_request.close();
         
         # Notice that we have allow_redirect=False inorder to idenify the status_code
+        # If status_code == 302 then user not found
+        # If status_code == 503 well kiit is down again (Rarely)
         if first_request.status_code != 302:
             return {
                 "status":"error",
                 "message": "Roll number doesn't exist"
             }
+        
+        if __name__ == "__main__":
+            print(f"{text['s']} Roll Number found")
             
-        print(f"{text['s']} Roll Number found")
-            
+        # Doesn't happen ever but why not
         if not "location" in first_request.headers:
             return {
                 "status":"error",
@@ -47,6 +55,8 @@ class Sherlock:
         
         redirect_url = first_request.headers["location"]
         submit_payment_url = url.urljoin(self.payment_post_url, redirect_url)
+
+        # They wish they had this money. Well they do have that much tho
         second_request = fetch.post(submit_payment_url, headers=self.headers, data={'amount': '100000000'})
         
         if second_request.status_code != 200:
@@ -61,6 +71,8 @@ class Sherlock:
         name=re.search(r"name=\"name\"\svalue=\"(.*)\"", second_request.text).group(1)
         program_des=re.search(r"name=\"Program_Description\"\svalue=\"(.*)\"", second_request.text).group(1)
         
+        # Internationals have no phone number in record
+        # But can be added through sap portal
         return {
             "status": "success",
             "student_id": student_id,
