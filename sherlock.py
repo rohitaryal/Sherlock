@@ -3,10 +3,10 @@ import re
 import urllib.parse as url
 
 text = {
-    "q": "\033[34m[ \033[1;35m?\033[34m ]\033[0m",
-    "w": "\033[34m[ \033[31m!\033[34m ]\033[0m",
-    "s": "\033[32m[ \033[1;32m+\033[32m ]\033[0m",
-    "l": "\033[33m[ \033[1;33m*\033[33m ]\033[0m",
+    "q": "\033[1;34m[ \033[1;35m?\033[1;34m ]\033[0m",
+    "w": "\033[1;34m[ \033[1;31m!\033[1;34m ]\033[0m",
+    "s": "\033[1;32m[ \033[1;32m+\033[1;32m ]\033[0m",
+    "l": "\033[1;33m[ \033[1;33m*\033[1;33m ]\033[0m",
     "c": "\033[1;36m:\033[0m"
 }
 
@@ -65,11 +65,17 @@ class Sherlock:
                 "message": f"Server responded with status code {second_request.status_code}"
             }
             
-        student_id=re.search(r"name=\"student_id\"\svalue=\"(.*)\"", second_request.text).group(1)
-        phone_no=re.search(r"name=\"phone\"\svalue=\"(.*)\"", second_request.text).group(1)
-        email_id=re.search(r"name=\"email\"\svalue=\"(.*)\"", second_request.text).group(1)
-        name=re.search(r"name=\"name\"\svalue=\"(.*)\"", second_request.text).group(1)
-        program_des=re.search(r"name=\"Program_Description\"\svalue=\"(.*)\"", second_request.text).group(1)
+        try:
+            student_id=re.search(r"name=\"student_id\"\svalue=\"(.*)\"", second_request.text).group(1)
+            phone_no=re.search(r"name=\"phone\"\svalue=\"(.*)\"", second_request.text).group(1)
+            email_id=re.search(r"name=\"email\"\svalue=\"(.*)\"", second_request.text).group(1)
+            name=re.search(r"name=\"name\"\svalue=\"(.*)\"", second_request.text).group(1)
+            program_des=re.search(r"name=\"Program_Description\"\svalue=\"(.*)\"", second_request.text).group(1)
+        except:
+            return {
+                "status": "error",
+                "message": f"Failed to find for text fields"
+            }
         
         # Internationals have no phone number in record
         # But can be added through sap portal
